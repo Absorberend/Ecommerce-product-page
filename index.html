@@ -4,41 +4,141 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
   <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+
   
   <title>Frontend Mentor | E-commerce product page</title>
 
-  <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
-  <style>
-    .attribution { font-size: 11px; text-align: center; }
-    .attribution a { color: hsl(228, 45%, 44%); }
-  </style>
 </head>
 <body>
+  <header>
+    <div class="menu__bar__container">
+      <div class="menu__button">
+        <img src="images/icon-menu.svg" alt="menu icon">
+      </div>
+      <div class="logo__wrapper">
+        <img src="images/logo.svg" alt="sneakers company logo">
+      </div>
+      <nav class="nav__bar">
+        <div class="close__container__nav__bar">
+          <span class="close__nav__bar"><img src="images/icon-close.svg"></span>
+        </div>
+        <div class="nav__bar__wrapper">
+          <a href="#" class="nav__collections">Collections</a>
+          <a href="#" class="nav__men">Men</a>
+          <a href="#" class="nav__women">Women</a>
+          <a href="#" class="nav__about">About</a>
+          <a href="#" class="nav__contact">Contact</a>
+        </div>
+      </nav>
+      <div class="shopping__cart__wrapper">
+        <img src="images/icon-cart.svg" alt="shopping cart icon" class="shopping__cart__icon">
+        <div class="shopping__cart">
+            <span class="shopping__cart__header">Cart</span>
+            <span class="shopping__cart__divider"></span>
+            <div class="shopping__cart__items">
+              <span class="shopping__cart__empty_message">Your cart is empty.</span>
+            </div>
+            <button class="shopping__cart__button button__style">Checkout</button>
+        </div>
+      </div>
+      <div class="profile__menu">
+        <img src="images/image-avatar.png" alt="profile avatar">
+      </div>
+      <div class="divider__wrapper">
+        <span class="divider"></span>
+      </div>
+    </div>
+  </header>
+  <main>
 
-  Collections
-  Men
-  Women
-  About
-  Contact
+    <div class="gallery__containers__wrapper">
+      <!-- Container for the main image gallery -->
+      <div class="gallery__container">
+        <!-- Full-width images with number text -->
+        <div class="slide__container">
 
-  Sneaker Company
+            <!-- Next and previous buttons -->
+            <a class="prev button__template "><img src="images/icon-previous.svg"></a>
+            <a class="next button__template "><img src="images/icon-next.svg"></a>
+        </div>
+    
+        <!-- Thumbnail images -->
+        <div class="row">
 
-  Fall Limited Edition Sneakers
+        </div>
+    </div>
 
-  These low-profile sneakers are your perfect casual wear companion. Featuring a 
-  durable rubber outer sole, they’ll withstand everything the weather can offer.
+    <!-- Container for the modal image gallery -->
+    <div class="gallery__modal">
+        <!-- Full-width images with number text -->
+        <div class="modal__wrapper">
+            <div class="close__container__modal">
+                <span class="close__modal"><img src="images/icon-close.svg"></span>
+            </div>
+            <div class="slide__container__modal">
+            
+                <!-- Next and previous buttons -->
+                <a class="prev__modal button__template"><img src="images/icon-previous.svg"></a>
+                <a class="next__modal button__template"><img src="images/icon-next.svg"></a>
+            </div>
+        
+            <!-- Thumbnail images -->
+            <div class="row__modal">
 
-  $125.00
-  50%
-  $250.00
+            </div>
+        </div>
+      </div>
+    </div>
 
-  0
-  Add to cart
-  
-  <div class="attribution">
-    Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>. 
-    Coded by <a href="#">Your Name Here</a>.
-  </div>
+    <div class="content__container">
+      <div class="content__company">
+        
+      </div>
+      <div class="content__header">
+
+      </div>
+      <div class="content__info__text">
+
+      </div>
+      <div class="content__pricing__container">
+        <div class="content__price">
+          
+        </div>
+        <div class="content__price__discount">
+          
+        </div>
+        <div class="content__price__full">
+    
+        </div>
+      </div>
+      <div class="content__order__amount__wrapper">
+        <div class="order__amount__minus">
+          <img src="images/icon-minus.svg">
+        </div>
+        <div class="order__amount__total">
+    
+        </div>
+        <div class="order__amount__plus">
+          <img src="images/icon-plus.svg">
+        </div>
+      </div>
+      <div class="content__order__button">
+        <button class="button__style order__button"><img src="images/icon-cart.svg">Add to cart</button>
+      </div>  
+    </div>
+
+  </main>
+  <footer>
+    <div class="attribution">
+      Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>. 
+      Coded by <a href="#">Your Name Here</a>.
+    </div>
+  </footer>
+  <script src="js/script.js"></script>
 </body>
 </html>
