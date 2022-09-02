@@ -42,9 +42,12 @@ let orderTotal = 0;
 // Shopping cart
 const shoppingCartIcon = document.querySelector(".shopping__cart__icon");
 const shoppingCartItems = document.querySelector(".shopping__cart__items");
+const shoppingCart = document.querySelector(".shopping__cart");
+const shoppingCartWrapper = document.querySelector(".shopping__cart__wrapper");
 const cartDisplay = document.querySelector(".shopping__cart");
 let previousOrderTotal;
 let cleared;
+let menuClose = true;
 
 // Order button
 const orderButton = document.querySelector(".order__button");
@@ -59,7 +62,7 @@ const sneakerProduct = {
   fullPrice: 250,
   discountAmount: 50,
   sellPrice: function() {
-    return `${(this.fullPrice * this.discountAmount) / 100}`;
+    return Number((this.fullPrice * this.discountAmount) / 100);
   },
   stock: 7,
   contentInfo: `These low-profile sneakers are your perfect casual wear companion. Featuring a 
@@ -107,9 +110,9 @@ const showContent = () => {
     contentCompany.insertAdjacentHTML("afterbegin", `<h3>${sneakerProduct.company}</h3>`);
     contentHeader.insertAdjacentHTML("afterbegin", `<h1>${sneakerProduct.productName}</h1>`);
     contentInfoText.insertAdjacentHTML("afterbegin", `<p>${sneakerProduct.contentInfo}</p>`);
-    contentPrice.insertAdjacentHTML("afterbegin", `<span>$${sneakerProduct.sellPrice()}</span>.00`);
+    contentPrice.insertAdjacentHTML("afterbegin", `<span>$${sneakerProduct.sellPrice().toFixed(2)}</span>`);
     contentPriceDiscount.insertAdjacentHTML("afterbegin", `<span>${sneakerProduct.discountAmount}%</span>`);
-    contentPriceFull.insertAdjacentHTML("afterbegin", `<span>$${sneakerProduct.fullPrice}.00</span>`);
+    contentPriceFull.insertAdjacentHTML("afterbegin", `<span>$${sneakerProduct.fullPrice.toFixed(2)}</span>`);
 }
 
 //Show product onload 
@@ -173,6 +176,7 @@ const clickThumbnail = function() {
       })
       slide.addEventListener("dblclick", function() {
         galleryModal.style.display = "block";
+        cartDisplay.style.display = "none";
       })
   })
 }
@@ -240,6 +244,12 @@ window.addEventListener("click", function(e) {
   if (e.target === navBarMenu) {
     navBarMenu.style.display = "none";
   }
+  if (menuClose === true && cartDisplay.style.display === "grid" && shoppingCartItems.contains(document.querySelector(".shopping__cart__empty_message")) && e.target.parentNode !== shoppingCart && e.target.parentNode !== shoppingCartWrapper) {
+      
+
+    cartDisplay.style.display = "none";
+
+  }
 })
 
 //when the window size is bigger than 768px the slides can be clicked to display the gallery modal
@@ -248,6 +258,7 @@ const windowResizeModal = function() {
     slide.addEventListener("click", function() {
       if (window.matchMedia("(min-width: 768px)").matches) {
         galleryModal.style.display = "block";
+        cartDisplay.style.display = "none";
       }
     })
   })
@@ -311,13 +322,15 @@ shoppingCartIcon.addEventListener("click", function() {
   }
 }); 
 
+
 // Order button
 orderButton.addEventListener("click", function(){
   
-  if (orderTotal > 0) {
+  if (orderTotal > 0 && sneakerProduct.stock > 0) {
     cleared = false;
     cartDisplay.style.display = "grid";
-    
+    menuClose = false;
+
     if(!shoppingCartItems.contains(document.querySelector(".product__name"))) {
     shoppingCartItems.innerHTML = "";
     checkoutButton.style.display = "block";
@@ -328,7 +341,7 @@ orderButton.addEventListener("click", function(){
       <img src="images/${sneakerProduct.productImages[3]}">
     </div>
     <span class="product__name">${sneakerProduct.productName}</span>
-    <span class="product__order__info">$${sneakerProduct.sellPrice()}.00 x ${orderTotal} ${`$${Number(sneakerProduct.sellPrice()) * Number(orderTotal)}.00`.bold()}</span>
+    <span class="product__order__info">$${sneakerProduct.sellPrice().toFixed(2)} x ${orderTotal} ${`$${(sneakerProduct.sellPrice() * Number(orderTotal)).toFixed(2)}`.bold()}</span>
     <div class="empty__cart">
       <img src="images/icon-delete.svg">
     </div>
@@ -345,21 +358,26 @@ orderButton.addEventListener("click", function(){
         orderTotal = 0;
         orderAmountTotal.innerText = orderTotal;
 
-        document.querySelector(".product__order__info").innerHTML = `$${sneakerProduct.sellPrice()}.00 x ${previousOrderTotal} ${`$${Number(sneakerProduct.sellPrice()) * previousOrderTotal }.00`.bold()}`;
+        document.querySelector(".product__order__info").innerHTML = `$${sneakerProduct.sellPrice().toFixed(2)} x ${previousOrderTotal} ${`$${(sneakerProduct.sellPrice() * previousOrderTotal).toFixed(2)}`.bold()}`;
       }
     }
-  }
-    //Empty shopping cart
-    const emptyShoppingCart = document.querySelector(".empty__cart");
+        //Empty shopping cart
+        const emptyShoppingCart = document.querySelector(".empty__cart");
 
-    emptyShoppingCart.addEventListener("click", function(){
-      if(!cleared) {
-      shoppingCartItems.innerHTML = `<span class="shopping__cart__empty_message">Your cart is empty.</span>`;
-      sneakerProduct.stock = sneakerProduct.stock + previousOrderTotal;
+        emptyShoppingCart.addEventListener("click", function(){
+          if(!cleared) {
+          shoppingCartItems.innerHTML = `<span class="shopping__cart__empty_message">Your cart is empty.</span>`;
+          sneakerProduct.stock = sneakerProduct.stock + previousOrderTotal;
+    
+          checkoutButton.style.display = "none";
+          cleared = true;
+          menuClose = false;
 
-      checkoutButton.style.display = "none";
-      cleared = true;
-    }
-  });
+          setTimeout(() => {
+            menuClose = true;
+          }, 10)
+        }
+      });
+  } 
 });
 
