@@ -13,6 +13,6 @@ https://www.frontendmentor.io/challenges/ecommerce-product-page-UPsZ9MJp6
 
 ![My solution](/images/design.jpg "My solution")
 
-View my solution at: 
+View my solution at: https://fabulous-sawine-cf374d.netlify.app 
 
 Feedback is welcome! Especially about JavaScript 😁
