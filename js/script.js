@@ -45,6 +45,7 @@ const shoppingCartItems = document.querySelector(".shopping__cart__items");
 const shoppingCart = document.querySelector(".shopping__cart");
 const shoppingCartWrapper = document.querySelector(".shopping__cart__wrapper");
 const cartDisplay = document.querySelector(".shopping__cart");
+const cartContents = document.querySelector(".cart__contents");
 let previousOrderTotal;
 let cleared;
 let menuClose = true;
@@ -56,7 +57,7 @@ const orderButton = document.querySelector(".order__button");
 const checkoutButton = document.querySelector(".shopping__cart__button");
 
 //sneakers object
-const sneakerProduct = {
+const productObj = {
   company: 'Sneaker Company',
   productName: 'Fall Limited Edition Sneakers',
   fullPrice: 250,
@@ -72,7 +73,7 @@ const sneakerProduct = {
 }
 
 const showContent = () => {
-  sneakerProduct.productImages.forEach(image => {
+  productObj.productImages.forEach(image => {
     
     const galleryImage = `
     <div class="mySlides">
@@ -90,7 +91,7 @@ const showContent = () => {
     slideModalContainer.insertAdjacentHTML("afterbegin", galleryModalImage);
   })
 
-  sneakerProduct.thumbnailImages.forEach(thumbnail => {
+  productObj.thumbnailImages.forEach(thumbnail => {
     const thumbnailImage = `
     <div class="column">
       <img class="demo cursor" src="images/${thumbnail}" data-slide-number="${thumbnail.substring(14, 15)}" alt="product image thumbnail ${thumbnail.substring(14, 15)}">
@@ -107,12 +108,12 @@ const showContent = () => {
     thumbnailModalContainer.insertAdjacentHTML("afterbegin", thumbnailModalImage);
   })
 
-    contentCompany.insertAdjacentHTML("afterbegin", `<h3>${sneakerProduct.company}</h3>`);
-    contentHeader.insertAdjacentHTML("afterbegin", `<h1>${sneakerProduct.productName}</h1>`);
-    contentInfoText.insertAdjacentHTML("afterbegin", `<p>${sneakerProduct.contentInfo}</p>`);
-    contentPrice.insertAdjacentHTML("afterbegin", `<span>$${sneakerProduct.sellPrice().toFixed(2)}</span>`);
-    contentPriceDiscount.insertAdjacentHTML("afterbegin", `<span>${sneakerProduct.discountAmount}%</span>`);
-    contentPriceFull.insertAdjacentHTML("afterbegin", `<span>$${sneakerProduct.fullPrice.toFixed(2)}</span>`);
+    contentCompany.insertAdjacentHTML("afterbegin", `<h3>${productObj.company}</h3>`);
+    contentHeader.insertAdjacentHTML("afterbegin", `<h1>${productObj.productName}</h1>`);
+    contentInfoText.insertAdjacentHTML("afterbegin", `<p>${productObj.contentInfo}</p>`);
+    contentPrice.insertAdjacentHTML("afterbegin", `<span>$${productObj.sellPrice().toFixed(2)}</span>`);
+    contentPriceDiscount.insertAdjacentHTML("afterbegin", `<span>${productObj.discountAmount}%</span>`);
+    contentPriceFull.insertAdjacentHTML("afterbegin", `<span>$${productObj.fullPrice.toFixed(2)}</span>`);
 }
 
 //Show product onload 
@@ -134,8 +135,18 @@ window.onload = function() {
   clickThumbnail();
   clickThumbnailModal();
 
-  //set shopping cart display to none
+  //set shopping cart display to none & set cart contents to amount stored in local storage
   cartDisplay.style.display = "none";  
+  cartContents.style.display = "none";
+  cartStorage();
+
+  //set zoom in cursor when mousing over gallery slide
+  if(!window.matchMedia("(max-width: 768px)").matches) {
+    slides.forEach(slide =>  {
+      slide.style.cursor = "-webkit-zoom-in",
+      slide.style.cursor = "zoom-in"
+      })
+  }
 }
 
 // Next/previous controls for both gallerly modal and productpage
@@ -245,10 +256,7 @@ window.addEventListener("click", function(e) {
     navBarMenu.style.display = "none";
   }
   if (menuClose === true && cartDisplay.style.display === "grid" && shoppingCartItems.contains(document.querySelector(".shopping__cart__empty_message")) && e.target.parentNode !== shoppingCart && e.target.parentNode !== shoppingCartWrapper) {
-      
-
     cartDisplay.style.display = "none";
-
   }
 })
 
@@ -269,14 +277,18 @@ document.addEventListener('keydown', function(event){
 	if(event.key === "Escape" && galleryModal.style.display === "block"){
 		galleryModal.style.display = "none";
 	}
-  else if (event.key === "Escape") {
+  else if (event.key === "Escape" && window.matchMedia("(max-width: 767px)").matches) {
     navBarMenu.style.display = "none";
+    cartDisplay.style.display = "none";  
+  } else if(event.key === "Escape" && cartDisplay.style.display === "grid") {
+    cartDisplay.style.display = "none"; 
   }
 });
 
 //Open hamburger menu when the hamburger is clicked
 openNavBar.addEventListener("click", function() {
   navBarMenu.style.display = "grid";
+  cartDisplay.style.display = "none"; 
 })
 
 //Trigger event when risizing window to small screen
@@ -286,18 +298,30 @@ window.addEventListener("resize", function () {
     galleryModal.style.display = "none";
     //Change from normal nav menu to hamburger menu on smaller screen
     navBarMenu.style.display = "none";
+
+    slides.forEach(slide =>  {
+      slide.style.cursor = "auto",
+      slide.style.cursor = "auto"
+      })
+      
   } 
-  if (window.matchMedia("(min-width: 769px)").matches) {
+  if (window.matchMedia("(min-width: 768px)").matches) {
     navBarMenu.style.display = "block";
+
+    slides.forEach(slide =>  {
+    slide.style.cursor = "-webkit-zoom-in",
+    slide.style.cursor = "zoom-in"
+    })
+    
   } 
 });
 
 // Order amount bar
 const totalOrderAmount = operator => {
-  if (Number(orderAmountTotal.innerText) >= 0 && Number(orderAmountTotal.innerText) <= sneakerProduct.stock) {
+  if (Number(orderAmountTotal.innerText) >= 0 && Number(orderAmountTotal.innerText) <= productObj.stock) {
     if (operator === "-" && Number(orderAmountTotal.innerText) > 0 ) {
       orderAmountTotal.innerText = orderTotal - 1;
-    } else if (operator === "+"  && Number(orderAmountTotal.innerText) < sneakerProduct.stock ) {
+    } else if (operator === "+"  && Number(orderAmountTotal.innerText) < productObj.stock ) {
       orderAmountTotal.innerText = orderTotal + 1;
     }
     orderTotal = Number(orderAmountTotal.innerText);
@@ -322,11 +346,77 @@ shoppingCartIcon.addEventListener("click", function() {
   }
 }); 
 
+const showCartContents = () => {
+  if (cartContents.style.display === "none") {
+    cartContents.style.display = "block";
+    cartContents.innerText = previousOrderTotal;
+  } else if (cartContents.style.display === "block") {
+      if(previousOrderTotal > 0) {
+        cartContents.innerText = previousOrderTotal;
+      }
+  }
+}
+
+const removeCartContent = () => {
+      if (!cleared) {
+      shoppingCartItems.innerHTML = `<span class="shopping__cart__empty_message">Your cart is empty.</span>`;
+      productObj.stock = productObj.stock + previousOrderTotal;
+      cartContents.style.display = "none";
+
+      checkoutButton.style.display = "none";
+      cleared = true;
+      menuClose = false;
+      localStorage.clear();
+
+      setTimeout(() => {
+        menuClose = true;
+      }, 100)
+    }
+}
+
+
+//Show cart contents based on local storage
+const cartStorage = () => {
+  if (parseInt(localStorage.getItem(`${productObj.productName}`)) > 0) {
+  cleared = false;
+  menuClose = false;
+  shoppingCartItems.innerHTML = "";
+  checkoutButton.style.display = "block";
+  orderTotal = parseInt(localStorage.getItem(`${productObj.productName}`));
+  previousOrderTotal = orderTotal;
+
+  const cartProductInfo = `
+  <div class="product__logo">
+    <img src="images/${productObj.productImages[3]}">
+  </div>
+  <span class="product__name">${productObj.productName}</span>
+  <span class="product__order__info">$${productObj.sellPrice().toFixed(2)} x ${orderTotal} ${`$${(productObj.sellPrice() * Number(orderTotal)).toFixed(2)}`.bold()}</span>
+  <div class="empty__cart">
+    <img src="images/icon-delete.svg">
+  </div>
+  `
+  shoppingCartItems.insertAdjacentHTML("afterbegin", cartProductInfo);
+
+  productObj.stock -= orderTotal;
+  orderTotal = 0;
+  orderAmountTotal.innerText = orderTotal;
+  showCartContents();
+  localStorage.setItem(`${productObj.productName}`, `${previousOrderTotal}`);
+
+        //Empty shopping cart
+        const emptyShoppingCart = document.querySelector(".empty__cart");
+
+        emptyShoppingCart.addEventListener("click", function(){
+          removeCartContent();
+      });  
+  }
+}
 
 // Order button
 orderButton.addEventListener("click", function(){
   
-  if (orderTotal > 0 && sneakerProduct.stock > 0) {
+  if (orderTotal > 0 && productObj.stock > 0) {
+
     cleared = false;
     cartDisplay.style.display = "grid";
     menuClose = false;
@@ -338,45 +428,38 @@ orderButton.addEventListener("click", function(){
 
     const cartProductInfo = `
     <div class="product__logo">
-      <img src="images/${sneakerProduct.productImages[3]}">
+      <img src="images/${productObj.productImages[3]}">
     </div>
-    <span class="product__name">${sneakerProduct.productName}</span>
-    <span class="product__order__info">$${sneakerProduct.sellPrice().toFixed(2)} x ${orderTotal} ${`$${(sneakerProduct.sellPrice() * Number(orderTotal)).toFixed(2)}`.bold()}</span>
+    <span class="product__name">${productObj.productName}</span>
+    <span class="product__order__info">$${productObj.sellPrice().toFixed(2)} x ${orderTotal} ${`$${(productObj.sellPrice() * Number(orderTotal)).toFixed(2)}`.bold()}</span>
     <div class="empty__cart">
       <img src="images/icon-delete.svg">
     </div>
     `
     shoppingCartItems.insertAdjacentHTML("afterbegin", cartProductInfo);
 
-    sneakerProduct.stock -= orderTotal;
+    productObj.stock -= orderTotal;
     orderTotal = 0;
     orderAmountTotal.innerText = orderTotal;
+    showCartContents();
+    localStorage.setItem(`${productObj.productName}`, `${previousOrderTotal}`);
     } else if (shoppingCartItems.contains(document.querySelector(".product__name"))) {
-      if (document.querySelector(".product__name").innerText === sneakerProduct.productName) {
+      if (document.querySelector(".product__name").innerText === productObj.productName) {
         previousOrderTotal = Number(previousOrderTotal) + Number(orderTotal);
-        sneakerProduct.stock -= orderTotal;
+        productObj.stock -= orderTotal;
         orderTotal = 0;
         orderAmountTotal.innerText = orderTotal;
-
-        document.querySelector(".product__order__info").innerHTML = `$${sneakerProduct.sellPrice().toFixed(2)} x ${previousOrderTotal} ${`$${(sneakerProduct.sellPrice() * previousOrderTotal).toFixed(2)}`.bold()}`;
+        showCartContents();
+        localStorage.setItem(`${productObj.productName}`, `${previousOrderTotal}`);
+        
+        document.querySelector(".product__order__info").innerHTML = `$${productObj.sellPrice().toFixed(2)} x ${previousOrderTotal} ${`$${(productObj.sellPrice() * previousOrderTotal).toFixed(2)}`.bold()}`;
       }
     }
         //Empty shopping cart
         const emptyShoppingCart = document.querySelector(".empty__cart");
 
         emptyShoppingCart.addEventListener("click", function(){
-          if(!cleared) {
-          shoppingCartItems.innerHTML = `<span class="shopping__cart__empty_message">Your cart is empty.</span>`;
-          sneakerProduct.stock = sneakerProduct.stock + previousOrderTotal;
-    
-          checkoutButton.style.display = "none";
-          cleared = true;
-          menuClose = false;
-
-          setTimeout(() => {
-            menuClose = true;
-          }, 10)
-        }
+          removeCartContent();
       });
   } 
 });
