@@ -431,7 +431,7 @@ orderButton.addEventListener("click", function(){
       <img src="images/${productObj.productImages[3]}">
     </div>
     <span class="product__name">${productObj.productName}</span>
-    <span class="product__order__info">$${productObj.sellPrice().toFixed(2)} x ${orderTotal} ${`$${(productObj.sellPrice() * Number(orderTotal)).toFixed(2)}`.bold()}</span>
+    <span class="product__order__info">$${productObj.sellPrice().toFixed(2)} x ${orderTotal} <span class=black__font>${`$${(productObj.sellPrice() * Number(orderTotal)).toFixed(2)}</span>`.bold()}</span>
     <div class="empty__cart">
       <img src="images/icon-delete.svg">
     </div>
@@ -452,7 +452,7 @@ orderButton.addEventListener("click", function(){
         showCartContents();
         localStorage.setItem(`${productObj.productName}`, `${previousOrderTotal}`);
         
-        document.querySelector(".product__order__info").innerHTML = `$${productObj.sellPrice().toFixed(2)} x ${previousOrderTotal} ${`$${(productObj.sellPrice() * previousOrderTotal).toFixed(2)}`.bold()}`;
+        document.querySelector(".product__order__info").innerHTML = `$${productObj.sellPrice().toFixed(2)} x ${previousOrderTotal} <span class=black__font>${`$${(productObj.sellPrice() * previousOrderTotal).toFixed(2)}</span>`.bold()}`;
       }
     }
         //Empty shopping cart
